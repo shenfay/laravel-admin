@@ -25,7 +25,7 @@
             @elseif($vo->getOption('type') === 'tag')
             <select class="layui-input {{$field_name}}-multiple-limit" @if($required)required="required"@endif multiple="multiple" name="{{$field_name}}{{ $vo->getOption('maxselection')>1 ? '[]' : '' }}">
                 @foreach ($vo->getOption('options') as $option)
-                <option @if($value == $option['id']) selected @endif value="{{ $option['id'] }}">{{ $option['text'] }}</option>
+                <option @if($value == $option['value']) selected @endif value="{{ $option['value'] }}">{{ $option['label'] }}</option>
                 @endforeach
             </select>
             <link href="{{ asset('admin/plugs/select2/select2.min.css') }}" rel="stylesheet">

@@ -1,4 +1,5 @@
 <?php
+
 namespace Shengfai\LaravelAdmin\Fields;
 
 class Tag extends Field
@@ -21,20 +22,20 @@ class Tag extends Field
     public function build()
     {
         parent::build();
-        
+
         $options = $this->suppliedOptions;
-        
+
         $dataOptions = is_callable($options['options']) ? $options['options']() : $options['options'];
         $options['options'] = [];
-        
+
         // iterate over the options to create the options assoc array
-        foreach ($dataOptions as $val => $text) {
+        foreach ($dataOptions as $value => $label) {
             $options['options'][] = [
-                'id' => is_numeric($val) ? $val : $text,
-                'text' => $text
+                'value' => $value,
+                'label' => $label
             ];
         }
-        
+
         $this->suppliedOptions = $options;
     }
 }
