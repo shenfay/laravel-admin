@@ -82,7 +82,7 @@ class AccountController extends Controller
     {
         ActivityHandler::console()->performedOn($user)->log('授权登录');
         
-        return $this->success('登录成功，正在进入系统...', route('admin.main'));
+        return redirect()->intended(route('admin.main'));
     }
 
     /**

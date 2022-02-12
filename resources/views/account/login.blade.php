@@ -29,7 +29,7 @@
 
     <!-- 页面表单主体 开始 -->
     <div class="container">
-        <form autocomplete="off" onsubmit="return false;" data-time="0.001" data-auto="true" method="post" class="content layui-form animated fadeInDown">
+        <form autocomplete="off" method="post" class="content layui-form animated fadeInDown">
             <div class="people">
                 <div class="tou"></div>
                 <div id="left-hander" class="initial_left_hand transition"></div>
@@ -50,7 +50,7 @@
                 </li>
                 <li class="text-center">
                 	{{ csrf_field() }}
-                    <button type="submit" class="layui-btn layui-disabled" data-form-loaded="立 即 登 入">正 在 载 入</button>
+                    <button type="submit" class="layui-btn">立 即 登 入</button>
                 </li>
             </ul>
         </form>
