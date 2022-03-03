@@ -16,13 +16,11 @@ use Illuminate\Database\Eloquent\Model;
 use Shengfai\LaravelAdmin\Traits\Scope;
 
 /**
- * 分类模型.
- *
+ * 分类模型
  * Class Type
  *
  * @author ShengFai <shengfai@qq.com>
- *
- * @version 2020年3月10日
+ * @package \Shengfai\LaravelAdmin\Models
  */
 class Type extends Model
 {
@@ -35,7 +33,7 @@ class Type extends Model
      */
     protected $fillable = [
         'parent_id',
-        'model_type',
+        'model',
         'name',
         'code',
         'cover_pic',
@@ -61,9 +59,7 @@ class Type extends Model
      */
     public function isUsed()
     {
-        $class = 'App\Models\\'.$this->model_type;
-
-        return $class::ofType($this->id)->exists();
+        return $this->model::ofType($this->id)->exists();
     }
 
     /**
@@ -125,21 +121,6 @@ class Type extends Model
             return $query;
         }
 
-        $class = ucfirst(class_basename($model));
-
-        return $query->where('model_type', $class);
-    }
-
-    /**
-     * 模型设置器.
-     *
-     * @param string $url
-     *
-     * @return string
-     */
-    public function setModelTypeAttribute($value)
-    {
-        $class = ucfirst(class_basename($value));
-        $this->attributes['model_type'] = $class;
+        return $query->where('model', $model);
     }
 }

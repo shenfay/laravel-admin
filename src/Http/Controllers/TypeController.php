@@ -1,4 +1,5 @@
 <?php
+
 namespace Shengfai\LaravelAdmin\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -22,6 +23,32 @@ class TypeController extends Controller
     protected $title = '类型管理';
 
     /**
+     * 当前
+     *
+     * @var array
+     */
+    protected $type;
+
+    /**
+     * 加载业务参数
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function loadBizParameters(Request $request)
+    {
+        // 加载配置
+        $type_models = config('administrator.type_models');
+
+        if (!isset($type_models[$request->model])) {
+            return $this->error('该模型暂未启用类目配置！');
+        }
+
+        // 当前业务模型
+        $this->type = $type_models[$request->model];
+    }
+
+    /**
      * Display a listing of the resource
      *
      * @param \Illuminate\Http\Request $request
@@ -29,11 +56,13 @@ class TypeController extends Controller
      */
     public function index(Request $request)
     {
-        $queryBuilder = Type::query()->ofModel($request->model);
-        
+        $queryBuilder = Type::query()->ofModel($this->type['model']);
+
         // 当前分类
-        $this->buildModelTypes($request->model);
-        
+        $this->buildModelTypes($this->type);
+
+        $this->assign('class', $request->model);
+
         return $this->list($queryBuilder);
     }
 
@@ -46,8 +75,10 @@ class TypeController extends Controller
     public function create(string $model)
     {
         // 获取上级类型
-        $this->buildModelTypes($model);
-        
+        $this->buildModelTypes($this->type);
+
+        $this->assign('class', $model);
+
         return $this->form();
     }
 
@@ -63,12 +94,12 @@ class TypeController extends Controller
     {
         try {
             $type->fill($request->all());
-            
+
             $type->user_id = auth()->user()->id;
-            
+
             $type->save();
-            
-            return $this->success('数据添加成功', '');
+
+            return $this->success('数据添加成功', route('admin.types.index', ['model' => $request->route('model')]));
         } catch (\Exception $e) {
             return $this->error('数据添加失败', '', $e);
         }
@@ -85,10 +116,11 @@ class TypeController extends Controller
     {
         // 获取类别记录
         $this->assign('type', $type);
-        
+        $this->assign('class', $model);
+
         // 获取上级类型
-        $this->buildModelTypes($model);
-        
+        $this->buildModelTypes($this->type);
+
         return $this->form();
     }
 
@@ -104,23 +136,24 @@ class TypeController extends Controller
         try {
             // 获取记录
             $type = Type::query()->where('id', $id)->first();
-            
+
             // 更新指定字段
             if ($request->isMethod('Patch')) {
                 tap($type)->update([
                     $request->field => $request->value
                 ]);
-                
+
                 return $this->success('数据更新成功', '');
             }
-            
+
             // 全量更新
             $type->fill($request->all());
-            
+
             $type->save();
-            
+
             return $this->success('数据更新成功', '');
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -135,9 +168,9 @@ class TypeController extends Controller
         if ($type->children->isNotEmpty()) {
             return $this->error('请先删除该类型下的子类型', '');
         }
-        
+
         $type->delete();
-        
+
         return $this->success('数据删除成功', '');
     }
 
@@ -147,19 +180,17 @@ class TypeController extends Controller
      * @param string $model
      * @return void
      */
-    protected function buildModelTypes(string $model)
+    protected function buildModelTypes(array $type)
     {
-        $class = strtolower(class_basename($model));
-        
         // 模型
-        $this->title = config('administrator.types_title')[$class];
-        $this->assign('model', $model);
-        
+        $this->title = $type['title'];
+        $this->assign('model', $type['model']);
+
         // 获取上级类型
-        $parentTypes = Type::query()->ofModel($model)
+        $parentTypes = Type::query()->ofModel($type['model'])
             ->ofParent(0)
             ->get();
-        
+
         $this->assign('parent_types', $parentTypes);
     }
 }

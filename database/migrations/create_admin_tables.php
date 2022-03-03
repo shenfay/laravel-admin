@@ -42,7 +42,7 @@ class CreateAdminTables extends Migration
         Schema::create('types', function (Blueprint $table) {
             $table->unsignedMediumInteger('id', true);
             $table->unsignedMediumInteger('parent_id')->default(0);
-            $table->string('model_type', 32)->index()->comment('适用模型');
+            $table->string('model', 64)->index()->comment('适用模型');
             $table->string('name', 32)->comment('名称');
             $table->string('identifier', 32)->nullable()->comment('标识');
             $table->string('cover_pic', 128)->nullable()->comment('封面');
