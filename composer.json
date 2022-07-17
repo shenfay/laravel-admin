@@ -2,7 +2,11 @@
     "name": "shengfai\/laravel-admin",
     "description": "An administrative interface package for Laravel",
     "license": "MIT",
-    "keywords": ["laravel", "admin", "laravel admin"],
+    "keywords": [
+        "laravel",
+        "admin",
+        "laravel admin"
+    ],
     "authors": [
         {
             "name": "shengfai",
@@ -10,16 +14,16 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
-        "laravel/framework": ">=8.0",
-        "spatie/laravel-permission": ">=3.0",
-        "spatie/laravel-activitylog": ">=3.0",
+        "php": ">=8.0.0",
+        "laravel/framework": ">=9.0",
+        "spatie/laravel-permission": ">=5.0",
+        "spatie/laravel-activitylog": ">=4.0",
         "laravel/ui": ">=3.0",
-        "overtrue/laravel-options": "^2.0",
-        "overtrue/laravel-uploader": "^2.0",
-        "spatie/laravel-tags": "^3.0",
+        "overtrue/laravel-options": "^3.0",
+        "overtrue/laravel-uploader": "^3.0",
+        "spatie/laravel-tags": "^4.0",
         "overtrue/pinyin": "~4.0",
-        "spatie/laravel-query-builder": "^3.3",
+        "spatie/laravel-query-builder": "^5.0",
         "tymon/jwt-auth": "dev-develop"
     },
     "autoload": {
