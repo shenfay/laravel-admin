@@ -11,6 +11,7 @@ use Shengfai\LaravelAdmin\Traits\CustomActivityProperties;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Activitylog\LogOptions;
 
 /**
  * 用户模型
@@ -37,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
         self::TYPE_ORGANIZER => '机构用户',
         self::TYPE_ADMINISTRATOR => '管理用户',
     ];
-    
+
     /**
      * The attributes that are mass assignable
      *
@@ -110,9 +111,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return self::$typeMap[$this->type];
     }
-    
+
     /**
-     * customizing the description
+     * Customizing the description
      *
      * @return string
      */
@@ -125,6 +126,16 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return '更新用户';
+    }
+
+    /**
+     * Customization of how your models will be logged is controlled when implementing getActivitylogOptions.
+     *
+     * @return LogOptions
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
     }
 
     /**
@@ -159,10 +170,10 @@ class User extends Authenticatable implements JWTSubject
         if (is_null($type)) {
             return $query->where('type', '<>', self::TYPE_ADMINISTRATOR);
         }
-    
+
         return $query->where('type', $type);
     }
-    
+
     /**
      * 设置密码
      *

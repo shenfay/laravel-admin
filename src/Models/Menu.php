@@ -1,4 +1,5 @@
 <?php
+
 namespace Shengfai\LaravelAdmin\Models;
 
 use Illuminate\Support\Str;
@@ -7,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Shengfai\LaravelAdmin\Contracts\Conventions;
 use Shengfai\LaravelAdmin\Traits\CustomActivityProperties;
 use Shengfai\LaravelAdmin\Traits\Scope;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Models\Permission;
 
@@ -84,7 +86,7 @@ class Menu extends Model
     }
 
     /**
-     * customizing the description
+     * Customizing the description
      *
      * @return string
      */
@@ -95,8 +97,18 @@ class Menu extends Model
         } elseif ('deleted' == $eventName) {
             return '删除菜单';
         }
-        
+
         return '更新菜单';
+    }
+
+    /**
+     * Customization of how your models will be logged is controlled when implementing getActivitylogOptions.
+     *
+     * @return LogOptions
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
     }
 
     /**
@@ -129,11 +141,11 @@ class Menu extends Model
         if (Str::contains($value, 'http')) {
             return $value;
         }
-        
+
         if (Str::contains($value, '/')) {
             $value = config('administrator.prefix') . $value;
         }
-        
+
         return $value;
     }
 
@@ -158,10 +170,10 @@ class Menu extends Model
     public function getFullUrlAttribute()
     {
         $value = '';
-        if (! empty($this->attributes['url']) && '#' !== $this->attributes['url']) {
+        if (!empty($this->attributes['url']) && '#' !== $this->attributes['url']) {
             $value = $this->attributes['url'] . (empty($this->attributes['params']) ? '' : "?{$this->attributes['params']}");
         }
-        
+
         return $value;
     }
 
@@ -175,7 +187,7 @@ class Menu extends Model
         if (is_null($value)) {
             $value = '';
         }
-        
+
         $this->attributes['code'] = $value;
     }
 }
