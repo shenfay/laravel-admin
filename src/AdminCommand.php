@@ -1,4 +1,5 @@
 <?php
+
 namespace Shengfai\LaravelAdmin;
 
 use Illuminate\Console\Command;
@@ -39,14 +40,14 @@ class AdminCommand extends Command
     public function handle()
     {
         $this->info('Publishing the assets');
-        
+
         $this->call('vendor:publish', [
             '--provider' => 'Spatie\Permission\PermissionServiceProvider',
             '--force' => true
         ]);
         $this->call('vendor:publish', [
             '--provider' => 'Spatie\Activitylog\ActivitylogServiceProvider',
-            '--tag' => 'migrations'
+            '--tag' => 'activitylog-config'
         ]);
         $this->call('vendor:publish', [
             '--provider' => 'Overtrue\LaravelOptions\OptionsServiceProvider',
@@ -64,14 +65,14 @@ class AdminCommand extends Command
             '--provider' => 'Spatie\Tags\TagsServiceProvider',
             '--force' => true
         ]);
-        
+
         $this->info('Dumping the composer autoload');
         (new Process([
             'composer dump-autoload'
         ]))->run();
-        
+
         $this->info('Migrating the database tables into your application');
-        
+
         $this->call('notifications:table');
         $this->call('migrate');
     }
