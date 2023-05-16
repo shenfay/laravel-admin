@@ -14,17 +14,17 @@
         }
     ],
     "require": {
-        "php": ">=8.0.0",
-        "laravel/framework": ">=9.0",
-        "spatie/laravel-permission": ">=5.0",
-        "spatie/laravel-activitylog": ">=4.0",
-        "laravel/ui": ">=3.0",
-        "overtrue/laravel-options": "^3.0",
-        "overtrue/laravel-uploader": "^3.0",
-        "spatie/laravel-tags": "^4.0",
-        "overtrue/pinyin": "~4.0",
-        "spatie/laravel-query-builder": "^5.0",
-        "tymon/jwt-auth": "dev-develop"
+        "php": ">=8.1.0",
+        "laravel/framework": "^10.0",
+        "spatie/laravel-permission": "^5.8",
+        "spatie/laravel-activitylog": "^4.7.3",
+        "laravel/ui": "^4.2",
+        "overtrue/laravel-options": "^3.1",
+        "overtrue/laravel-uploader": "^3.1",
+        "spatie/laravel-tags": "^4.3.6",
+        "overtrue/pinyin": "~5.1",
+        "spatie/laravel-query-builder": "^5.1.2",
+        "tymon/jwt-auth": "^2.0"
     },
     "autoload": {
         "psr-4": {

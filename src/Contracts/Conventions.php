@@ -11,14 +11,14 @@ namespace Shengfai\LaravelAdmin\Contracts;
  */
 interface Conventions
 {
-    const VERSION = '1.1.8';                            // 版本
+    const VERSION = '2.10.0';                            // 版本
 
     /**
      * 注册通道
      */
     const REGISTERED_CHANNEL_WXAMP = 1;                 // 小程序
     const REGISTERED_CHANNEL_CONSOLE = 10;              // 控制台
-    
+
     /**
      * 通用状态
      */
@@ -61,7 +61,7 @@ interface Conventions
     const PAY_TYPE_ALIPAY_POS           = 13;           // 支付宝刷卡支付
     const PAY_TYPE_ALIPAY_SCAN          = 14;           // 支付宝扫码支付
     const PAY_TYPE_ALIPAY_TRANSFER      = 15;           // 支付宝账户转账
-    
+
     const PAY_TYPE_WXPAY_MP             = 20;           // 微信公众号支付
     const PAY_TYPE_WXPAY_MINIAPP        = 21;           // 微信小程序支付
     const PAY_TYPE_WXPAY_WAP            = 22;           // 微信H5支付
