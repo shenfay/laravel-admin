@@ -23,8 +23,7 @@
         "overtrue/laravel-uploader": "^3.1",
         "spatie/laravel-tags": "^4.3.6",
         "overtrue/pinyin": "~5.1",
-        "spatie/laravel-query-builder": "^5.1.2",
-        "tymon/jwt-auth": "^2.0"
+        "spatie/laravel-query-builder": "^5.1.2"
     },
     "autoload": {
         "psr-4": {

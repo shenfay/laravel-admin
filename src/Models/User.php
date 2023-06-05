@@ -9,7 +9,6 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Shengfai\LaravelAdmin\Traits\CustomActivityProperties;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\LogOptions;
 
@@ -20,7 +19,7 @@ use Spatie\Activitylog\LogOptions;
  * @package \App\Models
  * @author ShengFai <shengfai@qq.com>
  */
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
     use SoftDeletes, LogsActivity, CustomActivityProperties;
     use Notifiable, HasRoles;
@@ -82,9 +81,9 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $casts = [
-        'gender' => 'integer',
-        'status' => 'integer',
-        'email_verified_at' => 'datetime',
+        'gender'             => 'integer',
+        'status'             => 'integer',
+        'email_verified_at'  => 'datetime',
         'notification_count' => 'integer'
     ];
 
@@ -136,26 +135,6 @@ class User extends Authenticatable implements JWTSubject
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
-    }
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
     }
 
     /**
