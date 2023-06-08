@@ -8,34 +8,37 @@ use Shengfai\LaravelAdmin\Http\Middleware\Authenticate;
 | API Routes
 |--------------------------------------------------------------------------
 */
-Route::name('admin.api.')->prefix('api')->middleware(['api'])->group(function () {
+
+if (config('administrator.enable_api_routes')) {
+    Route::name('admin.api.')->prefix('api')->middleware(['api'])->group(function () {
 
         // 授权
         Route::post('authorizations/accounts', 'Shengfai\LaravelAdmin\Http\Controllers\AuthorizationController@authorizeWithAccount')->name('accounts.authorize');
-    
+
         // 授权后可访问接口
         Route::group(['middleware' => 'auth:api'], function () {
-            
-            Route::put('authorizations/current', 'Shengfai\LaravelAdmin\Http\Controllers\AuthorizationController@update')->name('authorizations.update');          // 刷新token
-            Route::delete('authorizations/current', 'Shengfai\LaravelAdmin\Http\Controllers\AuthorizationController@destroy')->name('authorizations.destroy');     // 删除token
-            
+
+            Route::put('authorizations/current', 'Shengfai\LaravelAdmin\Http\Controllers\AuthorizationController@update')->name('authorizations.update');       // 刷新token
+            Route::delete('authorizations/current', 'Shengfai\LaravelAdmin\Http\Controllers\AuthorizationController@destroy')->name('authorizations.destroy');  // 删除token
+
             // 自定义路由
             Route::namespace(config('administrator.namespace'))->group(function () {
                 if (file_exists(config('administrator.custom_routes_file'))) {
                     include config('administrator.custom_routes_file');
                 }
             });
-            
+
             Route::namespace('Shengfai\LaravelAdmin\Http\Controllers')->group(function () {
-                
+
                 Route::get('user', 'ManagerController@show')->name('user.me');
-                
+
                 include __DIR__ . '/routes/system.php';     // 系统
                 include __DIR__ . '/routes/settings.php';   // 设置
                 include __DIR__ . '/routes/models.php';     // 模型
             });
         });
     });
+}
 
 /*
 |--------------------------------------------------------------------------
