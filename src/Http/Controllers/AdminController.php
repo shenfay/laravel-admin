@@ -1,6 +1,8 @@
 <?php
+
 namespace Shengfai\LaravelAdmin\Http\Controllers;
 
+use Closure;
 use Illuminate\Support\Arr;
 use Overtrue\LaravelOptions\Option;
 use Shengfai\LaravelAdmin\Traits\Response;
@@ -31,7 +33,7 @@ class AdminController extends Controller
             $config = app('admin.item_config');
             return $this->resort($config->getDataModel());
         }
-        
+
         // set the layout content and title
         return view('admin::grid');
     }
@@ -62,10 +64,10 @@ class AdminController extends Controller
         $columnFactory = app('admin.column_factory');
         $actionPermissions = $actionFactory->getActionPermissions();
         $fields = $fieldFactory->getEditFields();
-        
+
         // try to get the object
         $model = $config->getModel($itemId, $fields, $columnFactory->getIncludedColumns($fields));
-        
+
         if ($this->request->acceptsHtml()) {
             $model = $config->updateModel($model, $fieldFactory, $actionFactory);
             $view = $this->request->action === 'edit' ? 'admin::form' : 'admin::detail';
@@ -74,7 +76,7 @@ class AdminController extends Controller
                 'model' => $model
             ]);
         }
-        
+
         // set the Vary : Accept header to avoid the browser caching the json response
         return $this->response($model->toArray())->header('Vary', 'Accept');
     }
@@ -90,17 +92,17 @@ class AdminController extends Controller
     {
         try {
             $config = app('admin.item_config');
-            
+
             $fieldFactory = app('admin.field_factory');
             $actionFactory = app('admin.action_factory');
-            
+
             if (array_key_exists('form_request', $config->getOptions()) && $this->formRequestErrors !== null) {
                 return response()->json([
                     'success' => false,
                     'errors' => $this->formRequestErrors
                 ]);
             }
-            
+
             if ($this->request->has('field')) {
                 $request = $this->request;
                 $request->offsetSet($request->field, $request->value);
@@ -110,12 +112,12 @@ class AdminController extends Controller
             } else {
                 $save = $config->save($this->request, $fieldFactory->getEditFields(), $actionFactory->getActionPermissions(), $id);
             }
-            
+
             $columnFactory = app('admin.column_factory');
             $fields = $fieldFactory->getEditFields();
             $model = $config->getModel($id, $fields, $columnFactory->getIncludedColumns($fields));
             ActivityHandler::console()->performedOn($model)->log($id ? '更新' : '创建' . $config->getOption('single'));
-            
+
             return $this->success();
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
@@ -137,16 +139,16 @@ class AdminController extends Controller
             'success' => false,
             'error' => 'There was an error perform batch deletion. Please reload the page and try again.'
         ];
-        
+
         // if don't have permission, send back request
         $permissions = $actionFactory->getActionPermissions();
-        if (! $permissions['delete']) {
+        if (!$permissions['delete']) {
             return response()->json($errorResponse);
         }
-        
+
         // request ids: 1,3,5
         $ids = explode(',', $this->request->id ?? $this->request->ids);
-        
+
         // delete the model
         if ($baseModel::whereIn('id', $ids)->delete()) {
             return $this->success('数据删除成功！');
@@ -168,15 +170,15 @@ class AdminController extends Controller
             // set the layout dashboard
             return view(config('administrator.dashboard_view'));
         }
-        
+
         // else we should redirect to the menu item
         $configFactory = app('admin.config_factory');
         $home = config('administrator.home_page');
-        
+
         // first try to find it if it's a model config item
         $config = $configFactory->make($home);
-        
-        if (! $config) {
+
+        if (!$config) {
             throw new \InvalidArgumentException('Administrator: ' . trans('administrator::administrator.valid_home_page'));
         } elseif ($config->getType() === 'model') {
             return redirect()->route('admin.index', [
@@ -198,14 +200,24 @@ class AdminController extends Controller
     public function results(string $modelName)
     {
         try {
-            
+
             $dataTable = app('admin.datatable');
             $modelConfig = app('admin.item_config');
-            
+
             // return the rows
             $queryParameters = $modelConfig->getOptions()['query_parameters'] ?? [];
-            $results = $dataTable->getRows($modelConfig->getDataModel(), $queryParameters, $this->perPage);
-            
+
+            // EloquentBuilder
+            $queryBuilder = \value(function ($parameters) use ($modelConfig) {
+                if (isset($parameters['builder']) && ($parameters['builder'] instanceof Closure)) {
+                    return $parameters['builder']();
+                } else {
+                    return  $modelConfig->getDataModel();
+                }
+            }, $queryParameters);
+
+            $results = $dataTable->getRows($queryBuilder, $queryParameters, $this->perPage);
+
             return response()->json([
                 'error_code' => 0,
                 'data' => $results->items(),
@@ -232,21 +244,21 @@ class AdminController extends Controller
     public function settings(string $settingsName)
     {
         try {
-            
+
             $config = app('admin.item_config');
-            
+
             // set the layout content and title
             if ($this->request->isMethod('Get')) {
-                
+
                 if ($this->request->wantsJson()) {
                     $options = Option::get();
                     return $this->response($options->toArray());
                 }
-                
+
                 $this->title = $config->getOption('title');
                 return $this->view([], 'admin::settings');
             }
-            
+
             // POST save settings method
             if ($this->request->isMethod('Post')) {
                 $config->save($this->request, app('admin.field_factory')->getEditFields());
@@ -269,7 +281,7 @@ class AdminController extends Controller
         if (in_array($locale, config('administrator.locales'))) {
             $this->session->put('administrator_locale', $locale);
         }
-        
+
         return redirect()->back();
     }
 }
