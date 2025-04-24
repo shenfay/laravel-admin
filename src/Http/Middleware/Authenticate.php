@@ -19,24 +19,24 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         $configFactory = app('admin.config_factory');
-        
+
         // get the admin check closure that should be supplied in the config
-        $permission = function () use($request) {
+        $permission = function () use ($request) {
             return $this->shouldPassThrough($request) || Auth::check();
         };
-        
+
         // if this is a simple false value, send the user to the login redirect
         if (!$response = $permission()) {
-            $loginUrl = route(config('administrator.login_path'));
-            $redirectKey = config('administrator.login_redirect_key', 'redirect');
+            $loginUrl     = route(config('administrator.login_path'));
+            $redirectKey  = config('administrator.login_redirect_key', 'redirect');
             $responseData = [
                 'code' => 0,
-                'msg' => '抱歉，您还没有登录获取访问权限！',
-                'url' => $loginUrl
+                'msg'  => '抱歉，您还没有登录获取访问权限！',
+                'url'  => $loginUrl
             ];
             return $request->isXmlHttpRequest() ? response()->json($responseData) : redirect()->guest($loginUrl)->with($redirectKey, $request->url());
         }
-        
+
         return $next($request);
     }
 
@@ -54,11 +54,20 @@ class Authenticate
             'admin.login',
             'admin.logout'
         ]);
-        
-        $route = collect($excepts)->first(function ($item) use ($request) {
-            return $request->routeIs($item);
-        });
-        
-        return $route != null;
+
+        foreach ($excepts as $except) {
+
+            // route name
+            if ($request->routeIs($except)) {
+                return true;
+            }
+
+            // uri
+            if ($request->is($except)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
