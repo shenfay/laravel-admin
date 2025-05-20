@@ -15,6 +15,13 @@ if (config('administrator.enable_api_routes')) {
         // 授权
         Route::post('authorizations/accounts', 'Shengfai\LaravelAdmin\Http\Controllers\AuthorizationController@authorizeWithAccount')->name('accounts.authorize');
 
+          // Custom Public Routes
+        Route::namespace(config('administrator.namespace'))->group(function () {
+            if (file_exists(config('administrator.custom_public_routes_file'))) {
+                include config('administrator.custom_public_routes_file');
+            }
+        });
+
         // 授权后可访问接口
         Route::group(['middleware' => 'auth:api'], function () {
 
