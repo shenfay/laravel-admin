@@ -120,6 +120,7 @@ class CreateAdminTables extends Migration
             $table->string('title', 64)->comment('名称');
             $table->string('cover_pic', 64)->default('')->nullable()->comment('封面/Logo');
             $table->string('description', 512)->default('')->nullable()->comment('描述');
+            $table->string('link', 256)->nullable()->comment('链接');
             $table->unsignedTinyInteger('sort')->default(0);
             $table->timestamps();
             $table->index(['sort', 'updated_at']);

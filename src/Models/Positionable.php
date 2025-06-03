@@ -1,4 +1,5 @@
 <?php
+
 namespace Shengfai\LaravelAdmin\Models;
 
 use Illuminate\Support\Str;
@@ -40,6 +41,7 @@ class Positionable extends Model
         'title',
         'cover_pic',
         'description',
+        'link',
         'sort',
         'created_at',
         'updated_at'
@@ -62,7 +64,7 @@ class Positionable extends Model
      * @param string $key
      * @return string|array
      */
-    public function getPositionableModel(string $key = null)
+    public function getPositionableModel(?string $key = null)
     {
         $availablePositionedModels = config('administrator.available_positioned_models');
         $modelName = Str::of(class_basename($this->positionable_type))->snake()
@@ -98,12 +100,12 @@ class Positionable extends Model
      * @param int $position_id
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOfPosid(Builder $query, int $position_id = null)
+    public function scopeOfPosid(Builder $query, ?int $position_id = null)
     {
         if (is_null($position_id)) {
             return $query;
         }
-        
+
         return $query->where('position_id', $position_id);
     }
 }
