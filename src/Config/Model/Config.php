@@ -111,7 +111,7 @@ class Config extends ConfigBase implements ConfigInterface
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function getModel($id = 0, array $fields, array $columns)
+    public function getModel($id = 0, array $fields = [])
     {
         //if we're getting an existing model, we'll want to first get the edit fields without the relationships loaded
         $originalModel = $model = $this->getDataModel();
@@ -197,14 +197,14 @@ class Config extends ConfigBase implements ConfigInterface
             }
 
             //set the options attribute
-            $model->setAttribute($name.'_options', $options);
+            $model->setAttribute($name . '_options', $options);
 
             //unset the relationships so we only get back what we need
             $model->relationships = [];
 
             //set the autocomplete array
             if ($autocomplete) {
-                $model->setAttribute($name.'_autocomplete', $autocompleteArray);
+                $model->setAttribute($name . '_autocomplete', $autocompleteArray);
             }
         }
         //if there are no values, then just set an empty array
