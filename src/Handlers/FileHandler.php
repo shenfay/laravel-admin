@@ -38,7 +38,7 @@ class FileHandler
                 $mine[] = is_array($_exinfo) ? join(',', $_exinfo) : $_exinfo;
             }
         }
-        
+
         return join(',', array_unique($mine));
     }
 
@@ -49,15 +49,15 @@ class FileHandler
      * @param string $path
      * @return string
      */
-    public static function startsWithUrlForResource(string $url, string $path = null)
+    public static function startsWithUrlForResource(string $url, ?string $path = null)
     {
         // 未设置
         if (empty($path) || Str::is('http*', $path)) {
             return $path;
         }
-        
+
         // 填充域名
-        return $url . $path;
+        return $url . Str::start($path, '/');
     }
 
     /**
@@ -67,13 +67,13 @@ class FileHandler
      * @param string $path
      * @return string
      */
-    public static function exceptUrlForResource(string $url, string $path = null)
+    public static function exceptUrlForResource(string $url, ?string $path = null)
     {
         // 处理图片域名
         if (Str::startsWith($path, $url)) {
             $path = Str::after($path, $url);
         }
-        
+
         return $path;
     }
 }
